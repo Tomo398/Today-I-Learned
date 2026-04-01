@@ -1,0 +1,16 @@
+#無視したい拡張子一覧
+
+#書類系
+*.pdf
+*.csv
+*.xlsx
+*.docx
+*.doc
+
+#仮想環境
+*.venv
+venv/
+*.vscode
+
+#個人設定(プロジェクトによっては必要になることもあるらしい)
+*.code-workspace
