@@ -16,10 +16,10 @@ tfk.model()
 Keras3はtensorflow、pytorch、jaxを統合的に扱えるライブラリとなった<br>
 よって、
 ```python
-import keras
-# 2. 裏で何を動かすか（PyTorch / JAX / TensorFlow）は、環境変数で指定する
+# ○ 必ずインポートする前にバックエンドを固定する
 import os
-os.environ["KERAS_BACKEND"] = "tensorflow"  # または "jax", "tensorflow"
+os.environ["KERAS_BACKEND"] = "torch"
+import keras
 
 keras.model()
 ```
