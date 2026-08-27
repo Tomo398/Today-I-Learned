@@ -41,10 +41,10 @@ class Post: # 親クラス Superクラス
 
 class SponsoredPost(Post): # 子クラス Subクラス
     def __init__(self, text, sponsor):#オーバーライド
-        # self._text = text
+        # self._text = text (子クラスで初期化することもできるが、superで書くことで初期化を親クラスに任せる)
         # self._likes = 0
         super().__init__(text)
-        self._sponsor = sponsor
+        self._sponsor = sponsor#親クラスにない、子クラス独自の引数のみ初期化コードを書く
 
     def show(self):#オーバーライド
         print(f"{self._text} - {self._likes} sponsored by {self._sponsor}")

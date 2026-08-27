@@ -126,3 +126,72 @@ setter,getterといったクラスにしっかり書く場合と、@propertyの�
 二つ目は、@propertyを使うと、*circle.get_area()*のように()を使わず、*circle.area*のように書ける。<br>
 これはメゾットの中身があたかも何かステータス(状態やデータ)のようなものであれば、()を使わずかけた方が直感的でよい<br>
 逆に、メゾットの中身が、行動にまつわるものだとsetter,getterの方が好ましい
+
+### setterとgetterの順序について
+直感的には、値のセットである*setter*が最初にきて、返り値としてゲットする*getter*が後に来た方がわかりやすい<br>
+しかし、*@property*を使うときは、getterである、*@property*が最初に来て、*@().setter*が後に来る<br>
+こうなる理由は、2つある<br>
+1つは、*@().setter*は先に、*@property*を定義しないと使えないからである<br>
+コードの内のコメントアウトで述べたように、*@().setter*は、*@property*で決めた**機能に付け足していくもの**である<br>
+繰り返しになるが、「@」は右のオブジェクトに.~のメゾットを装飾して、という意味あいがある<br>
+
+2つ目は、そもそも**読み取り専用**が基本だからである<br>
+setterはあくまでオプションで、読み取りのみで終わることも多い<br>
+また、最初にgetter(property)があることで返り値として何があるか把握しやすい<br>
+
+### @propertyのみを使うメリットについて
+先程、@propertyのみで用いることがあると述べたが、直感的にはただあるオブジェクトを読み込んで返り値として吐き出すことのどこに需要があるかわからない<br>
+そこでメリットを2つ述べる<br>
+1.関数の結果を属性のように()を付けず扱える
+
+```python
+# 【クラスを作る側のコード】
+class User:
+    def __init__(self, full_name):
+        self.full_name = full_name  # ただの変数
+
+# 【クラスを使う側のコード（外部のプログラム）】
+user = User("山田 太郎")
+# あちこちで「 user.full_name 」として呼び出されている
+print(user.full_name)
+```
+上記のコードに新たな要望があって関数ライクのコードを書く必要になったとき、<br>
+あらゆるコードで*full_name()*という風にカッコをつける必要に追われる<br>
+しかし、@propertyを使えばそのままクラスの中身を変えるだけで対応できる<br>
+
+2.読み取り専用にして安全を守れる
+外から勝手に書き換えられては困る変数がある<br>
+
+```python
+# 悪い例（普通の変数）
+class BankAccount:
+    def __init__(self):
+        self.balance = 1000  # 残高
+
+account = BankAccount()
+account.balance = 99999999  # 外部から残高を変更できてしまう
+
+# 良い例（@propertyで読み取り専用にする）
+class BankAccount:
+    def __init__(self):
+        self._balance = 1000
+
+    @property
+    def balance(self):
+        return self._balance
+
+account = BankAccount()
+print(account.balance)  # 1000 (見るのはOK)
+
+# 外部から書き換えようとすると...
+account.balance = 99999999  
+# ❌ AttributeError: can't set attribute (エラーになって防いでくれる！)
+```
+2つ目に関しては、厳密には*account._balance*に代入してしまえば書き換えられてしまう<br>
+しかし、_は明示的に書き換え厳禁という印なのでより設計として安全になる<br>
+
+
+明確に使われやすいのはどちらかと言えば1で、**あるメソッドの結果を属性のように扱いたい**というときに使われる傾向にある<br>
+
+2も良く見られて、実際、@propertyを用いた*balance*を外部用にして、<br>
+何も用いない*_balance*を内部のコード用にするということをする
